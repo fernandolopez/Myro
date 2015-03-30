@@ -31,19 +31,30 @@ setup(
         'Topic :: Software Development :: Libraries',
     ],
 )
-import idlelib, os
-sitepath = idlelib.__file__.split(os.sep)[:-2]
+import os
+sitepath = []
+idlepath = []
+use_idle = True
+try:
+    import idlelib
+    sitepath.append(idlelib.__file__.split(os.sep)[:-2])
+    idlepath.append(idlelib.__file__.split(os.sep)[:-1])
+    idlepath = os.sep.join(idlepath)
+except ImportError:
+    use_idle = False
+
 sitepath.append("site-packages")
-idlepath = idlelib.__file__.split(os.sep)[:-1]
-idlepath = os.sep.join(idlepath)
 sitepath = os.sep.join(sitepath)
 if "install" in sys.argv:
-    copy_file("misc" + os.sep + "ScriptBinding.py", idlepath)
-    copy_file("misc" + os.sep + "config-extensions.def", idlepath)
+    if use_idle:
+        copy_file("misc" + os.sep + "ScriptBinding.py", idlepath)
+        copy_file("misc" + os.sep + "config-extensions.def", idlepath)
+
     copy_file("myro" + os.sep + "graphics.py", sitepath)
 else:
     print "on install, will:"
-    print "   copy misc" + os.sep + "ScriptBinding.py" + " -> "+ idlepath
-    print "   copy misc" + os.sep + "config-extensions.def" + " -> " + idlepath
+    if use_idle:
+        print "   copy misc" + os.sep + "ScriptBinding.py" + " -> "+ idlepath
+        print "   copy misc" + os.sep + "config-extensions.def" + " -> " + idlepath
     print "   copy myro" + os.sep + "graphics.py" + " -> " + sitepath
     
