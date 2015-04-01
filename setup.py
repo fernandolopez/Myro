@@ -34,27 +34,24 @@ setup(
 import os
 sitepath = []
 idlepath = []
-use_idle = True
-try:
+use_idle = False
+if use_idle:
     import idlelib
-    sitepath.append(idlelib.__file__.split(os.sep)[:-2])
-    idlepath.append(idlelib.__file__.split(os.sep)[:-1])
+    sitepath = idlelib.__file__.split(os.sep)[:-2]
+    idlepath = idlelib.__file__.split(os.sep)[:-1]
     idlepath = os.sep.join(idlepath)
-except ImportError:
-    use_idle = False
-
-sitepath.append("site-packages")
-sitepath = os.sep.join(sitepath)
-if "install" in sys.argv:
-    if use_idle:
+    if 'install' in sys.argv:
         copy_file("misc" + os.sep + "ScriptBinding.py", idlepath)
         copy_file("misc" + os.sep + "config-extensions.def", idlepath)
 
+sitepath.append("site-packages")
+sitepath = os.sep.join(sitepath)
+idlepath = os.sep.join(idlepath)
+
+if 'install' in sys.argv:
     copy_file("myro" + os.sep + "graphics.py", sitepath)
 else:
     print "on install, will:"
-    if use_idle:
-        print "   copy misc" + os.sep + "ScriptBinding.py" + " -> "+ idlepath
-        print "   copy misc" + os.sep + "config-extensions.def" + " -> " + idlepath
+    print "   copy misc" + os.sep + "ScriptBinding.py" + " -> "+ idlepath
+    print "   copy misc" + os.sep + "config-extensions.def" + " -> " + idlepath
     print "   copy myro" + os.sep + "graphics.py" + " -> " + sitepath
-    
